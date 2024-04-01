@@ -3,7 +3,7 @@ REGISTRY=kozyrnik
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
 TARGETOS=linux
 TARGETARCH=arm64
-BUILD_COMMAND=go build -v -o kbot -ldflags "-X 'github.com/andriy66/kbot/cmd.appVersion=${VERSION}'"
+BUILD_COMMAND=go build -v -o kbot -ldflags "-X 'github.com/kozyr-dv/kbot/cmd.appVersion=${VERSION}'"
 
 format:
 	gofmt -s -w ./
