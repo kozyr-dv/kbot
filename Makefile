@@ -23,7 +23,7 @@ linux: format get
 macos: format get
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 ${BUILD_COMMAND}
 windows: format get
-    CGO_ENABLED=0 GOOS=windows GOARCH=amd64 ${BUILD_COMMAND}
+    #CGO_ENABLED=0 GOOS=windows GOARCH=amd64 ${BUILD_COMMAND}
 
 image:
 	docker build . -t ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
