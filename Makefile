@@ -1,4 +1,4 @@
-VERSION = v1.0.1
+VERSION = v1.0.2
 APP = $(shell basename $(shell git remote get-url origin) | sed 's/.git$$//' | tr '[:upper:]' '[:lower:]')
 REGISTRY = kozyrnik
 TARGETOS = linux
