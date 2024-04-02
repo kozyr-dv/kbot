@@ -1,41 +1,30 @@
-VERSION = v1.0.2
-APP = $(shell basename $(shell git remote get-url origin) | sed 's/.git$$//' | tr '[:upper:]' '[:lower:]')
-REGISTRY = kozyrnik
-TARGETOS = linux
-TARGETARCH = amd64
+APP := $(shell basename $(shell git remote get-url origin))
+REGISTRY := kozyrnik
+VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
+TARGETOS=linux #linux darwin windows
+TARGETARCH=arm64 #amd64 arm64
 
 format:
 	gofmt -s -w ./
 
-goget:
-	go get -v ./...
-
-build: format goget
-	CGO_ENABLED=0 go build -v -o kbot -ldflags "-X 'github.com/kozyr-dv/kbot/cmd.appVersion=$(VERSION)'"
-
-linux: format goget
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o kbot -ldflags "-X 'github.com/kozyr-dv/kbot/cmd.appVersion=$(VERSION)'"
-
-arm: format goget
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -v -o kbot -ldflags "-X 'github.com/kozyr-dv/kbot/cmd.appVersion=$(VERSION)'"
-
-macos: format goget
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -v -o kbot -ldflags "-X 'github.com/kozyr-dv/kbot/cmd.appVersion=$(VERSION)'"
-
-windows: format goget
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -v -o kbot.exe -ldflags "-X 'github.com/kozyr-dv/kbot/cmd.appVersion=$(VERSION)'"
-
 lint:
-	golint ./...
+	golint
 
 test:
-	go test -v ./...
+	go test -v
+
+get:
+	go get
+
+build: format get
+	CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o kbot -ldflags "-X="github.com/kozyr-dv/kbot/cmd.appVersion=${VERSION}
 
 image:
-	docker build . -t $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH)
+	docker build . -t ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}  --build-arg TARGETARCH=${TARGETARCH}
 
 push:
-	docker push $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH)
+	docker push ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
 
 clean:
-	docker rmi -f $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH)
+	rm -rf kbot
+	docker rmi ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
