@@ -32,10 +32,10 @@ test:
 	go test -v ./...
 
 image:
-	docker build . -t $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH) .
+	docker build . -t $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH)
 
 push:
 	docker push $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH)
 
 clean:
-	docker rmi $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH)
+	docker rmi -f $(REGISTRY)/$(APP):$(VERSION)-$(TARGETARCH)
