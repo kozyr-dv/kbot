@@ -1,39 +1,33 @@
-APP=$(shell basename $(shell git remote get-url origin))
-REGISTRY=kozyrnik
-VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
-TARGETOS=linux# darwin windows
-TARGETARCH=amd64# amd64 arm64
+APP := $(shell basename $(shell git remote get-url origin) | sed 's/.git$$//')
+REGISTRY := ghcr.io/andriikovalchuka
+VERSION := $(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
+TARGETOS := linux # Значення за замовчуванням, можна змінити на darwin або windows
+TARGETARCH := amd64 # Значення за замовчуванням, можна змінити на arm64
 
-linux:
-	$(MAKE) image TARGETOS=linux TARGETARCH=${TARGETARCH}
-
-windows:
-	$(MAKE) image TARGETOS=windows TARGETARCH=${TARGETARCH}
-
-macos:
-	$(MAKE) image TARGETOS=darwin TARGETARCH=${TARGETARCH}
+linux windows macos:
+	@$(MAKE) image TARGETOS=$(if $(filter $@,macos),darwin,$@) TARGETARCH=$(TARGETARCH)
 
 format:
 	gofmt -s -w ./
 
 lint:
-	golint
+	golint ./...
 
 test:
-	go test -v
+	go test -v ./...
 
 get:
-	go get
+	go get ./...
 
 build: format get
-	CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o kbot -ldflags "-X="github.com/kozyr-dv/kbot/cmd.appVersion=${VERSION}
+	CGO_ENABLED=0 GOOS=$(TARGETOS) GOARCH=$(TARGETARCH) go build -v -o kbot -ldflags "-X 'github.com/andriikovalchuka/kbot/cmd.appVersion=$(VERSION)'"
 
 image:
-	docker build . -t ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH} --build-arg=TARGETOS=${TARGETOS} --build-arg=TARGETARCH=${TARGETARCH}
+	docker build . -t $(REGISTRY)/$(APP):$(VERSION)-$(TARGETOS)-$(TARGETARCH) --build-arg TARGETOS=$(TARGETOS) --build-arg TARGETARCH=$(TARGETARCH)
 
 push:
-	docker push ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH}
+	docker push $(REGISTRY)/$(APP):$(VERSION)-$(TARGETOS)-$(TARGETARCH)
 
 clean:
 	rm -rf kbot
-	docker rmi -f ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH}
+	docker rmi -f $(REGISTRY)/$(APP):$(VERSION)-$(TARGETOS)-$(TARGETARCH)
