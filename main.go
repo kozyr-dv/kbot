@@ -3,7 +3,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/vit-um/kbot/cmd"
+import "github.com/spf13/kbot/cmd"
 
 func main() {
 	cmd.Execute()
