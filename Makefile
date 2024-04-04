@@ -1,8 +1,8 @@
 APP := $(shell basename $(shell git remote get-url origin) | sed 's/.git$$//')
 REGISTRY := kozyrnik
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
-TARGETOS=linux # Значення за замовчуванням, можна змінити на darwin або windows
-TARGETARCH=arm64 # Значення за замовчуванням.
+TARGETOS=linux# Значення за замовчуванням, можна змінити на darwin або windows
+TARGETARCH=arm64# Значення за замовчуванням.
 
 linux windows macos:
 	@$(MAKE) image TARGETOS=$(if $(filter $@,macos),darwin,$@) TARGETARCH=$(TARGETARCH)
