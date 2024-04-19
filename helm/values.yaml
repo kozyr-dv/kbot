@@ -1,6 +1,7 @@
 image:
   repository: kozyrnik
-  tag: "v1.0.2-7a3a138-linux-arm64"
+ # tag: "v1.0.2-7a3a138-linux-arm64"
+  tag: "v1.3.0-e8ad59c"
   arch: "amd64"
   os: "linux"
 # Додатково визначте секцію для токену TELE_TOKEN
