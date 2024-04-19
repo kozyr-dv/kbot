@@ -1,8 +1,9 @@
 APP := $(shell basename $(shell git remote get-url origin) | sed 's/.git$$//')
 REGISTRY := kozyrnik
+REGISTRY=ghcr.io/kozyr-dv/
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
 TARGETOS=linux# Значення за замовчуванням, можна змінити на darwin або windows
-TARGETARCH=arm64# Значення за замовчуванням.
+TARGETARCH=amd64# Значення за замовчуванням.
 
 linux windows macos:
 	@$(MAKE) image TARGETOS=$(if $(filter $@,macos),darwin,$@) TARGETARCH=$(TARGETARCH)
@@ -26,7 +27,7 @@ image:
 	docker build . -t $(REGISTRY)/$(APP):$(VERSION)-$(TARGETOS)-$(TARGETARCH) --build-arg TARGETOS=$(TARGETOS) --build-arg TARGETARCH=$(TARGETARCH)
 
 push:
-	docker push $(REGISTRY)/$(APP):$(VERSION)-$(TARGETOS)-$(TARGETARCH)
+	docker push ${REGESTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH}
 
 clean:
 	rm -rf kbot
