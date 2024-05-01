@@ -5,7 +5,7 @@
 replicaCount: 1
 image:
   repository: "kozyr-dv/kbot"
-  tag: "v1.0.3-ef0e612"
+  tag: "v1.3.0-e8ad59c"
   arch: "amd64"
   registry: ghcr.io
   os: linux
