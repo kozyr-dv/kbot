@@ -1096,3 +1096,6 @@ kubectl port-forward deployments/grafana 3000:3000 -n monitoring
 ```
 
 Переходимо за посиланням <http://localhost:3000> для роботи з дашбордом Grafana.
+
+![Пример изображения](images/grafana.png)
+
