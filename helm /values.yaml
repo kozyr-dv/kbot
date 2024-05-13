@@ -17,3 +17,38 @@ securityContext:
   privileged: true
 service:
   port: 8080
+
+config:
+  inputs: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/containers/*.log
+        Parser            docker
+        Tag               kube.*
+        Refresh_Interval  5
+        Skip_Long_Lines   On
+        Mem_Buf_Limit     5MB
+
+  filters: |
+    [FILTER]
+        Name                kubernetes
+        Match               kube.*
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Merge_Log           On
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude On
+
+  outputs: |
+    [OUTPUT]
+        Name            loki
+        Match           *
+        Url             http://loki:3100
+        Labels          job=fluentbit
+        RemoveKeys      host,source
+        Auto_Kubernetes_Labels On
+        LabelMapPath    /fluent-bit/etc/labelmap.json
+
+loki:
+  serviceName: loki
